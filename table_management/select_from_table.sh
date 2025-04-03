@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(dirname "$(realpath "$0")")/.."
+source "$SCRIPT_DIR/config.sh"
 
 read -p "Enter table name: " table_name
  echo "================================================"
@@ -16,7 +18,10 @@ read -p "Enter table name: " table_name
 
     if [ ! -f "$metadata_file" ]; then
         echo "<<----------------->>"
+
         echo -e "${RED}Error: Table '$tableName' does not exist.${RESET}"
+
+        echo -e "${RED}Error: Table '$table_name' does not exist.${RESET}"
         echo "<<----------------->>"
         return
     fi
@@ -45,7 +50,9 @@ read -p "Enter table name: " table_name
                     sed -n '2p;4p' "${metadata_file}"
                     echo "<<--------------------------------------------------------->>"
                     echo -e "${RED}<<----- The Table Is Empty. Not Data Yet !! ------>>${RESET}"
-                   echo "================================================"->>"
+
+                   echo "================================================"
+                
                 fi
                 break;;
             [Nn][Oo])
@@ -190,7 +197,7 @@ read -p "Enter table name: " table_name
                                    echo "================================================"
                                 else
                                     # File is empty, print the header
-                                    echo "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*"
+                                    echo "================================================"
                                     sed -n '2p;4p' "${metadata_file}"
                                     echo "<<-------------------------------------------------------->>"
                                     echo -e "${RED}<<----- The Table Is Empty. No Data Yet !! ------>>${RESET}"
@@ -246,5 +253,3 @@ read -p "Enter table name: " table_name
                 ;;
         esac
     done
-
-
