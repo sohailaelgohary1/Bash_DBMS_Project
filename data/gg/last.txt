@@ -1,2 +1,2 @@
 last:
-id:int:
+name:text:

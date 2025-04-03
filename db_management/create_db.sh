@@ -31,7 +31,7 @@ if [ -z "$db_name" ]; then
 fi
 
 if [ -d "$DB_DIR/$db_name" ]; then
-   echo -e "${MAGENTA} Database $db_name is already exists${RESET}"
+   echo -e "${RED} Database $db_name is already exists${RESET}"
              echo "<<----------------->>"
              exit 1
        else 

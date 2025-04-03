@@ -28,12 +28,12 @@ if [[ "$table_name" =~ ^[0-9] ]]; then
     exit 1
 fi
 
-table_file="$db_name/$table_name.txt"
 
-if [[ -f "$table_file" ]]; then
-    echo -e "${MAGENTA}<<<< Table '$table_name' already exists >>>>${RESET}"
+if [[ -f "$table_name.txt" ]]; then
+    echo -e "${RED}<<<< Table '$table_name' already exists >>>>${RESET}"
     exit 1
 fi
+
 
 read -p "Please enter the number of columns: " numOfColumns
 echo "================================================"

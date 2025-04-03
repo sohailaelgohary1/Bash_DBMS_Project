@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Load color variables
-source "$(dirname "$0")/../config.sh"
+SCRIPT_DIR="$(dirname "$(realpath "$0")")/.."
+source "$SCRIPT_DIR/config.sh"
 
 DB_DIR="./data"
 
