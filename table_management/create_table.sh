@@ -33,7 +33,7 @@ while true; do
     tableName_upper="$table_name"
 
    if [ -f "$tableNaame_lower.txt" ] || [ -f "$tableName_upper.txt" ]; then
-     echo -e "${MAGENTA}<<<< $tableNaame_lower is already exists >>>>${RESET}"
+     echo -e "${RED}<<<< $tableNaame_lower is already exists >>>>${RESET}"
      continue
    fi
 
