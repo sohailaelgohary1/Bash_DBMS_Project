@@ -3,15 +3,16 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")/.."
 source "$SCRIPT_DIR/config.sh"
 
-read -p "Enter Table Name: " table_name
-echo "================================================"
+# Ask for a valid table name
+while true; do
+    read -p "Enter Table Name: " table_name
+    echo "================================================"
 
-  ## Validation ##
     if [ -z "$table_name" ]; then
         echo "<<----------------->>"
         echo -e "${RED}Error: Name of Table cannot be empty.${RESET}"
         echo "<<----------------->>"
-        return
+        continue
     fi
 
     invalid_char1=$(echo "$table_name" | grep -o '[^a-zA-Z0-9_]')
@@ -19,17 +20,17 @@ echo "================================================"
         echo "<<----------------->>"
         echo -e "${RED}Error: Invalid characters found in Table name: $invalid_char1${RESET}"
         echo "<<----------------->>"
-        return 1
+        continue
     fi
 
     if [[ $table_name =~ ^[0-9] ]]; then
         echo "<<----------------->>"
         echo -e "${RED}Error: The first character cannot be a number.${RESET}"
         echo "<<----------------->>"
-        return 1
+        continue
     fi
 
-    # Convert table name to lower case for consistent file naming
+    # Convert to lowercase
     tableName_lower=$(echo "$table_name" | tr '[:upper:]' '[:lower:]')
     metadata_file="${tableName_lower}.txt"
 
@@ -37,8 +38,12 @@ echo "================================================"
         echo "<<----------------->>"
         echo -e "${RED}Error: Table '$table_name' does not exist.${RESET}"
         echo "<<----------------->>"
-        return
+        continue
     fi
+
+    break  # if all validations pass
+done
+
 
     start_line=4
     columns_line=$(sed -n "${start_line}p" "$metadata_file")
@@ -54,58 +59,46 @@ echo "================================================"
     cat "raw_data_${metadata_file}"
 
     # Ask the user for the column to update
+while true; do
     read -p "Enter the name of the column to update: " columName
+    columnToUpdate=$(echo "$columName" | tr '[:upper:]' '[:lower:]')
 
- columnToUpdate=$(echo "$columName" | tr '[:upper:]' '[:lower:]')
-
-    ## Validations ##
-    # Check if the input is empty
     if [ -z "$columnToUpdate" ]; then
         echo "<<----------------->>"
         echo -e "${RED}Error: Name of column cannot be empty.${RESET}"
         echo "<<----------------->>"
-        return
+        continue
     fi
 
-
-    # Ensure the column name does not start with a number
     if [[ $columnToUpdate =~ ^[0-9] ]]; then
         echo "<<----------------->>"
         echo -e "${RED}Error: The first character cannot be a number.${RESET}"
         echo "<<----------------->>"
-        return 1
+        continue
     fi
 
-    # Ensure the column name is not entirely numeric
     if [[ $columnToUpdate =~ ^[0-9]+$ ]]; then
         echo "<<----------------->>"
         echo -e "${RED}Error: Column name cannot be entirely numeric.${RESET}"
         echo "<<----------------->>"
-        return 1
+        continue
     fi
 
-
-    # Check if the column exists in the table
     if [[ ! " ${columns_array[@]} " =~ " ${columnToUpdate} " ]]; then
         echo "<<----------------->>"
         echo -e "${RED}Error: Column '$columnToUpdate' does not exist in the table.${RESET}"
         echo "<<----------------->>"
-        return
+        continue
     fi
 
-    # Check if input is in columns_array
-    found=0
-    for column in ${columns_array[@]}; do
-        if [ "$column" == "$columnToUpdate" ]; then
-            found=1
-            break
-        fi
-    done
+    if [ "$columnToUpdate" == "my_pk" ]; then
+        echo -e "${RED}The default Pk can't be updated :)${RESET}"
+        continue
+    fi
 
-    if [ $found -eq 1 ]; then
-          if [ "$columnToUpdate" == "my_pk" ]; then 
-		  echo -e "${RED}The default Pk can't be update :)${RESET}"
-	  else	  
+    break  # If all checks pass
+done
+ 
          		  
         echo "<<----------------->>"
         echo -e "${BLUE}$columnToUpdate exists in the column list.${RESET}"
@@ -214,5 +207,3 @@ echo "================================================"
         else
             echo -e "${RED}Error: Old value '${oldValue}' not found in column '${columnToUpdate}' of table '${table_name}'.${RESET}"
         fi
-    fi
-    fi
